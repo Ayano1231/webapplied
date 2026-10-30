@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>キーボードで動かす</title>
+
+  <style>
+    .stage {
+      position: relative;
+      width: 600px;
+      height: 240px;
+      margin: 24px auto;
+      border: 2px solid #333;
+      background: #f6f8ff;
+      overflow: hidden;
+    }
+
+    #box {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      background: #ff6b6b;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <p style="text-align:center;">
+    ← → ↑ ↓ または W A S D で移動<br>
+    Shiftキーでダッシュ（青色）
+  </p>
+
+  <div class="stage">
+    <div id="box"></div>
+  </div>
+
+  <script>
+    const box = document.getElementById("box");
+
+    // 状態
+    let x = 50;
+    let y = 96;
+    let isDash = false;
+
+    const speed = 4;
+
+    // キーの状態
+    const keys = {};
+
+    document.addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+    });
+
+    document.addEventListener("keyup", (e) => {
+      keys[e.code] = false;
+    });
+
+    // 描画
+    function draw() {
+      box.style.left = x + "px";
+      box.style.top = y + "px";
+
+      if (isDash) {
+        box.style.backgroundColor = "blue";
+      } else {
+        box.style.backgroundColor = "#ff6b6b";
+      }
+    }
+
+    // 更新
+    function update() {
+
+      let currentSpeed = speed;
+
+      // Shiftでダッシュ
+      if (keys["ShiftLeft"] || keys["ShiftRight"]) {
+        currentSpeed = 8;
+        isDash = true;
+      } else {
+        isDash = false;
+      }
+
+      // 右
+      if (keys["ArrowRight"] || keys["KeyD"]) {
+        x += currentSpeed;
+      }
+
+      // 左
+      if (keys["ArrowLeft"] || keys["KeyA"]) {
+        x -= currentSpeed;
+      }
+
+      // 下
+      if (keys["ArrowDown"] || keys["KeyS"]) {
+        y += currentSpeed;
+      }
+
+      // 上
+      if (keys["ArrowUp"] || keys["KeyW"]) {
+        y -= currentSpeed;
+      }
+
+      // 壁判定
+      if (x < 0) x = 0;
+      if (x > 552) x = 552;
+
+      if (y < 0) y = 0;
+      if (y > 192) y = 192;
+
+      draw();
+    }
+
+    draw();
+    setInterval(update, 16);
+  </script>
+
+</body>
+</html>
